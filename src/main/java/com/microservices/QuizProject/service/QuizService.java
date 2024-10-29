@@ -4,6 +4,7 @@ package com.microservices.QuizProject.service;
 import com.microservices.QuizProject.model.QuestionWrappper;
 import com.microservices.QuizProject.model.Quiz;
 import com.microservices.QuizProject.model.QuizStart;
+import com.microservices.QuizProject.model.Response;
 import com.microservices.QuizProject.repo.QuestionRepo;
 import com.microservices.QuizProject.repo.QuizRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,19 @@ public class QuizService {
            questionForUser.add(qw);
        }
        return new ResponseEntity<>(questionForUser,HttpStatus.OK);
+    }
+
+    public ResponseEntity<Integer> calculateResponse(Integer id, List<Response> responses) {
+        QuizStart quizStart = quizRepo.findById(id).get();
+        List<Quiz> quizzes = quizStart.getQuestions();
+        int right = 0;
+        int i = 0;
+        for(Response response : responses){
+             if(response.getResponse().equals(quizzes.get(i).getRight_answer())){
+                 right++;
+                 i++;
+             }
+        }
+        return new ResponseEntity<>(right,HttpStatus.OK);
     }
 }
